@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { postOrderTraversal } from "./utils/treeTraversal";
+import { postOrderTraversal, inOrderTraversal, preOrderTraversal } from "./utils/treeTraversal";
 import { buildExpressionTree, solveRPN, TreeNode } from "./utils/parser";
 import ExpressionInput from "./components/ExpressionInput";
 import BinaryTree from "./components/BinaryTree";
@@ -7,6 +7,8 @@ import BinaryTree from "./components/BinaryTree";
 const App = () => {
   const [tree, setTree] = useState<TreeNode | null>(null);  // Estado para almacenar el árbol
   const [postOrderResult, setPostOrderResult] = useState<string>("");  // Estado para almacenar el resultado
+  const [inOrderResult, setInOrderResult] = useState<string>("");  // Estado para almacenar el resultado
+  const [preOrderResult, setPreOrderResult] = useState<string>("");  // Estado para almacenar el resultado
 
   // Función para manejar la expresión ingresada
   const handleExpressionSubmit = (expression: string) => {
@@ -17,8 +19,13 @@ const App = () => {
   // Recalcular el recorrido postorden cada vez que el árbol cambie
   useEffect(() => {
     if (tree) {
-      const result = postOrderTraversal(tree);
-      setPostOrderResult(result.join(" "));  // Guarda el resultado en el estado
+      const postorden = postOrderTraversal(tree);
+      setPostOrderResult(postorden.join(" "));
+      const inorden = inOrderTraversal(tree);
+      setInOrderResult(inorden.join(" "));
+      const preorden = preOrderTraversal(tree);
+      setPreOrderResult(preorden.join(" "));
+
     }
   }, [tree]);  // Solo se ejecuta cuando el árbol cambia
 
@@ -37,7 +44,10 @@ const App = () => {
       <ExpressionInput onSubmit={handleExpressionSubmit} />
       {tree && <BinaryTree tree={tree} />}
       {/* Muestra el resultado del recorrido postorden */}
+      <p className="mt-4 text-lg">Recorrido en Prorden: {preOrderResult}</p>
+      <p className="mt-4 text-lg">Recorrido en Inorden: {inOrderResult}</p>
       <p className="mt-4 text-lg">Recorrido en Postorden: {postOrderResult}</p>
+
       <button
         type="submit"
         className="bg-blue-500 text-white p-2 rounded-md mt-2 w-full max-w-xs"
